@@ -1,0 +1,68 @@
+[
+  {
+    "id": "u_mhhzz62n",
+    "email": "dham@gmail.com",
+    "role": "user",
+    "passwordHash": "$2b$10$2rRRu0.8kZIK.axeIAYDbe.NrQa9DFHGrOSiiH9UHXyAo5RWqBYFy"
+  },
+  {
+    "id": "u_mhi01etk",
+    "email": "dha@gmail.com",
+    "role": "admin",
+    "passwordHash": "$2b$10$DUqu9GWXSeN1.mDuD/1QjO.sKvqQ0W7xHmb7oFlR.3gJxiaTnTy6S"
+  },
+  {
+    "id": "u_mhi3bndjqley",
+    "email": "dd@g.com",
+    "role": "user",
+    "passwordHash": "$2b$10$1vwPPG/KhzU.b5aqvuKV1OjTxOq9ijDN7v/92XfEzGIh2vkuBQ1vC"
+  },
+  {
+    "id": "u_mhi3d36r7icj",
+    "email": "d@g.c",
+    "role": "admin",
+    "passwordHash": "$2b$10$Y3nbGKQvskoM0g/ZGEm5E.OY9mkaB1hN.Y9cYAOhygNQE1iCBpgMy"
+  },
+  {
+    "id": "u_mhi3e7nupc4j",
+    "email": "admin@gmail.com",
+    "role": "admin",
+    "passwordHash": "$2b$10$F1QoBUrVCOt0pN5d1sKO0e0EHGoxC.YhRv6AMu3kk4gkjODge68uq"
+  },
+  {
+    "id": "u_mhi3h3optqi0",
+    "email": "admin1@gmail.com",
+    "role": "admin",
+    "passwordHash": "$2b$10$qZfhjpiWM6UR1jGUreo90OrQRvHNfvI/MtpV3vuAynUI8RdsMdmrW"
+  },
+  {
+    "id": "u_mhi48taeqsk6",
+    "email": "admin@demo.test",
+    "role": "admin",
+    "passwordHash": "$2b$10$BxIs9Xu6OqxwFZDcR4fUfOY1Y43u6fV297qYuYUnK8xCQyrkZ1bDO"
+  },
+  {
+    "id": "u_mhi8n9820etd",
+    "email": "d@gmail.com",
+    "role": "user",
+    "passwordHash": "$2b$10$5N9vzr2kqVD8Fkb63dPzred1SBLVDZdDUvmoy//i2OCsRf.Ap5Ixu"
+  },
+  {
+    "id": "u_mhi8q9aso3lx",
+    "email": "d23@gmail.com",
+    "role": "admin",
+    "passwordHash": "$2b$10$Y5PE0AjryyI4ITStJJXu7O.NBS5.uRdi5VfJQsqkVzhPJfIUZVLWm"
+  },
+  {
+    "id": "u_mhi9auv4roci",
+    "email": "t@t.com",
+    "role": "admin",
+    "passwordHash": "$2b$10$WLmuvqZH7AhplnW3JbufEeU18Ki4GkwrtVJPAmCB821tc5NKM7w5u"
+  },
+  {
+    "id": "u_mhiarsaraz43",
+    "email": "dd@gmail.com",
+    "role": "user",
+    "passwordHash": "$2b$10$yRGsZ0VmZ87c9EOESsa/M.5KZiZ1wEmd0KFeO13xk0PC/so0tRfEy"
+  }
+]

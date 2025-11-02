@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin • Health+</title>
+  <link rel="stylesheet" href="./styles.css"/>
+
+  <script>
+    // Guard: don't flash admin if not an admin
+    (function () {
+      const role = localStorage.getItem('hp_role');
+      if (role !== 'admin') location.replace('./login.html');
+    })();
+  </script>
+
+  <style>
+    /* ===== Admin-only polish (uses your CSS variables) ===== */
+    .wrap       {max-width:1080px; margin:24px auto; padding:0 20px}
+    .page-title {font-size:32px; margin:8px 0 18px}
+
+    .toolbar{display:flex; gap:10px; align-items:center; margin:12px 0 18px}
+    .toolbar .spacer{flex:1}
+    .toolbar .pill{
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+      padding:8px 10px; border-radius:999px; display:flex; gap:8px; align-items:center
+    }
+    .toolbar input[type="search"]{
+      background:#0e1b23; border:1px solid rgba(255,255,255,.1); color:var(--text);
+      border-radius:10px; padding:8px 10px; width:200px
+    }
+
+    .kpi-grid{
+      display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px;
+      margin:12px 0 18px;
+    }
+    .kpi{
+      background:var(--panel); border:1px solid rgba(255,255,255,.06);
+      border-radius:14px; padding:14px;
+    }
+    .kpi .label{color:var(--muted); font-size:13px}
+    .kpi .value{font-size:28px; font-weight:700; margin-top:4px}
+
+    .subgrid{
+      display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-top:6px;
+    }
+    .panel{
+      background:var(--panel); border:1px solid rgba(255,255,255,.06);
+      border-radius:16px; padding:14px;
+    }
+    .panel h3{margin:4px 0 10px}
+    .tiny{font-size:12px; color:var(--muted)}
+
+    .chart-row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    canvas{width:100%; height:180px; background:rgba(255,255,255,.02); border-radius:10px}
+
+    table{width:100%; border-collapse:collapse}
+    th, td{padding:10px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06)}
+    thead th{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.02em}
+    tbody tr:hover{background:rgba(255,255,255,.03)}
+    .badge{display:inline-block; padding:4px 8px; border-radius:999px; background:var(--chip); color:var(--chipText); font-size:12px}
+    .right{justify-self:end; text-align:right}
+
+    @media (max-width: 980px){
+      .kpi-grid{grid-template-columns:1fr 1fr}
+      .subgrid{grid-template-columns:1fr}
+      .chart-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-burst"></div>
+      <strong class="brand">Health+</strong>
+      <span class="tagline">admin dashboard</span>
+    </div>
+    <nav class="header-right">
+      <a href="./index.html" class="btn outline">Shop</a>
+      <a id="linkLogout" href="#" class="btn outline">Logout</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1 class="page-title">KPIs & Recent Events</h1>
+
+    <!-- Top toolbar -->
+    <div class="toolbar">
+      <div class="pill tiny">
+        <span>Auto-refresh</span>
+        <label style="display:inline-flex;align-items:center;gap:6px">
+          <input id="autoRefresh" type="checkbox" style="accent-color:#16c2a3"/>
+          <span class="tiny">30s</span>
+        </label>
+      </div>
+      <button id="btnRefresh" class="btn small">Refresh now</button>
+      <button id="btnExport" class="btn small outline">Export CSV</button>
+      <div class="spacer"></div>
+      <input id="searchEvents" type="search" placeholder="Filter events… (type, email, id)"/>
+    </div>
+
+    <!-- KPI cards -->
+    <section class="kpi-grid" id="kpis">
+      <div class="kpi">
+        <div class="label">Total Revenue</div>
+        <div class="value" data-kpi="revenue">$0.00</div>
+        <div class="tiny" data-kpi="revenue-note"></div>
+      </div>
+      <div class="kpi">
+        <div class="label">MRR</div>
+        <div class="value" data-kpi="mrr">$0.00</div>
+        <div class="tiny" data-kpi="mrr-note"></div>
+      </div>
+      <div class="kpi">
+        <div class="label">Active Subs</div>
+        <div class="value" data-kpi="subs">0</div>
+        <div class="tiny" data-kpi="subs-note"></div>
+      </div>
+      <div class="kpi">
+        <div class="label">Orders</div>
+        <div class="value" data-kpi="orders">0</div>
+        <div class="tiny" data-kpi="orders-note"></div>
+      </div>
+    </section>
+
+    <!-- Charts + Today summary -->
+    <section class="subgrid">
+      <div class="panel">
+        <h3>Trends</h3>
+        <div class="chart-row">
+          <div>
+            <div class="tiny">Revenue (sum) • last 20 events</div>
+            <canvas id="revChart" width="600" height="180"></canvas>
+          </div>
+          <div>
+            <div class="tiny">Orders (count) • last 20 events</div>
+            <canvas id="ordChart" width="600" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Today</h3>
+        <div class="kpi-grid" style="grid-template-columns:1fr 1fr">
+          <div class="kpi">
+            <div class="label">Revenue</div>
+            <div class="value" id="todayRevenue">$0.00</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Orders</div>
+            <div class="value" id="todayOrders">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">New Subs</div>
+            <div class="value" id="todaySubs">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Canceled Subs</div>
+            <div class="value" id="todayCancels">0</div>
+          </div>
+        </div>
+        <div class="tiny" style="margin-top:8px">Computed from Stripe webhooks received by your server.</div>
+      </div>
+    </section>
+
+    <!-- Recent events table -->
+    <section class="panel" style="margin-top:14px">
+      <h3 style="margin-bottom:6px">Recent events</h3>
+      <div class="tiny" id="eventCount">0 events</div>
+      <div style="overflow:auto; margin-top:10px">
+        <table id="eventsTable">
+          <thead>
+            <tr>
+              <th style="width:180px">Time</th>
+              <th>Type</th>
+              <th>Details</th>
+              <th class="right" style="width:120px">Amount</th>
+            </tr>
+          </thead>
+          <tbody><!-- filled by JS --></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./auth.js"></script>
+  <script>
+    // Verify server role once more (non-blocking)
+    (async () => {
+      try {
+        const r = await fetch('/auth/me', { credentials: 'same-origin' });
+        if (!r.ok) throw 0;
+        const me = await r.json();
+        if (me?.user?.role !== 'admin') {
+          localStorage.removeItem('hp_role');
+          location.replace('./login.html');
+        } else {
+          localStorage.setItem('hp_role', 'admin');
+        }
+      } catch {}
+    })();
+
+    // Logout
+    document.getElementById('linkLogout').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try { await fetch('/auth/logout', { method:'POST', credentials:'same-origin' }); } catch {}
+      localStorage.removeItem('hp_role');
+      localStorage.removeItem('hp_email');
+      localStorage.removeItem('hp_token');
+      location.replace('./login.html');
+    });
+
+    // --- Dashboard logic ---
+    let METRICS = { kpis:{}, recent:[] };
+
+    async function fetchMetrics() {
+      const r = await fetch('/api/metrics', { credentials:'same-origin' });
+      if (!r.ok) throw new Error('metrics fetch failed');
+      METRICS = await r.json();
+      renderAll();
+    }
+
+    function setKpi(id, val, note='') {
+      const el  = document.querySelector(`[data-kpi="${id}"]`);
+      const elN = document.querySelector(`[data-kpi="${id}-note"]`);
+      if (el)  el.textContent  = val;
+      if (elN) elN.textContent = note;
+    }
+
+    function renderKPIs() {
+      const k = METRICS.kpis || {};
+      setKpi('revenue', `$${Number(k.revenue||0).toFixed(2)}`);
+      setKpi('mrr',     `$${Number(k.mrr||0).toFixed(2)}`);
+      setKpi('subs',    Number(k.activeSubs||0));
+      setKpi('orders',  Number(k.orders||0));
+    }
+
+    function sum(arr) { return arr.reduce((a,b)=>a+(+b||0),0); }
+
+    function renderToday() {
+      const today = new Date().toISOString().slice(0,10); // yyyy-mm-dd
+      let rev=0, orders=0, subs=0, cancels=0;
+
+      (METRICS.recent||[]).forEach(ev=>{
+        const d = new Date(ev.ts);
+        const iso = d.toISOString().slice(0,10);
+        if (iso !== today) return;
+
+        if (ev.type === 'order') {
+          orders++;
+          rev += Number(ev.data?.amount || 0);
+        } else if (ev.type === 'subscription_created') {
+          subs++;
+        } else if (ev.type === 'subscription_canceled') {
+          cancels++;
+        }
+      });
+
+      document.getElementById('todayRevenue').textContent = `$${rev.toFixed(2)}`;
+      document.getElementById('todayOrders').textContent  = orders;
+      document.getElementById('todaySubs').textContent    = subs;
+      document.getElementById('todayCancels').textContent = cancels;
+    }
+
+    // Tiny sparkline helpers (no external libs)
+    function drawBars(canvas, values, color='#21ddb8') {
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+
+      const n = values.length || 1;
+      const max = Math.max(...values, 1);
+      const pad = 8;
+      const gap = 4;
+      const barW = (W - pad*2 - gap*(n-1)) / n;
+
+      ctx.fillStyle = color;
+      values.forEach((v,i)=>{
+        const h = (H - pad*2) * (v/max);
+        const x = pad + i*(barW+gap);
+        const y = H - pad - h;
+        ctx.fillRect(x,y,barW,h);
+      });
+    }
+
+    function renderCharts() {
+      const recent = (METRICS.recent||[]).slice(0,20).reverse(); // oldest -> newest
+
+      // Revenue sparkline from order amounts
+      const revVals = recent.map(ev => ev.type==='order' ? Number(ev.data?.amount||0) : 0);
+      drawBars(document.getElementById('revChart'), revVals);
+
+      // Orders sparkline (1 for order or sub create, -1 for cancel)
+      const ordVals = recent.map(ev => {
+        if (ev.type==='order') return 1;
+        if (ev.type==='subscription_created') return 1;
+        if (ev.type==='subscription_canceled') return 0; // don’t “penalize” count bar
+        return 0;
+      });
+      drawBars(document.getElementById('ordChart'), ordVals, '#16c2a3');
+    }
+
+    function formatMoney(n){ return `$${Number(n||0).toFixed(2)}`; }
+
+    function renderTable() {
+      const q = document.getElementById('searchEvents').value.trim().toLowerCase();
+
+      const rows = (METRICS.recent||[])
+        .filter(ev=>{
+          if (!q) return true;
+          const s = JSON.stringify(ev).toLowerCase();
+          return s.includes(q);
+        })
+        .map(ev=>{
+          const when = new Date(ev.ts).toLocaleString();
+          let amount = '';
+          if (ev.type==='order') amount = formatMoney(ev.data?.amount||0);
+          if (ev.type==='subscription_created')  amount = formatMoney(ev.data?.mrr||0);
+          if (ev.type==='subscription_canceled') amount = formatMoney(ev.data?.mrr||0);
+
+          const details = (()=> {
+            if (ev.type==='order') {
+              const email = ev.data?.customer || '';
+              const mode  = ev.data?.mode || '';
+              const id    = ev.data?.id || '';
+              return `
+                <div class="tiny">Checkout <code>${id}</code></div>
+                <div class="tiny">${email ? email+' • ' : ''}${mode}</div>
+              `;
+            }
+            if (ev.type==='subscription_created') {
+              return `<div class="tiny">Subscription <code>${ev.data?.id||''}</code></div>`;
+            }
+            if (ev.type==='subscription_canceled') {
+              return `<div class="tiny">Subscription <code>${ev.data?.id||''}</code></div>`;
+            }
+            return `<div class="tiny">—</div>`;
+          })();
+
+          const badge = (()=> {
+            if (ev.type==='order') return `<span class="badge">order</span>`;
+            if (ev.type==='subscription_created') return `<span class="badge">sub +</span>`;
+            if (ev.type==='subscription_canceled') return `<span class="badge">sub −</span>`;
+            return `<span class="badge">other</span>`;
+          })();
+
+          return `
+            <tr>
+              <td>${when}</td>
+              <td>${badge}</td>
+              <td>${details}</td>
+              <td class="right">${amount}</td>
+            </tr>
+          `;
+        }).join('');
+
+      document.querySelector('#eventsTable tbody').innerHTML = rows || `
+        <tr><td colspan="4" class="tiny">No events yet.</td></tr>
+      `;
+      document.getElementById('eventCount').textContent = `${(METRICS.recent||[]).length} events`;
+    }
+
+    function renderAll(){
+      renderKPIs();
+      renderToday();
+      renderCharts();
+      renderTable();
+    }
+
+    // CSV export (recent events)
+    function exportCSV() {
+      const rows = [['timestamp','type','id','mode','email','amount','mrr']];
+      (METRICS.recent||[]).forEach(ev=>{
+        const d = ev.data||{};
+        rows.push([
+          ev.ts||'',
+          ev.type||'',
+          d.id||'',
+          d.mode||'',
+          d.customer||'',
+          d.amount||'',
+          d.mrr||''
+        ]);
+      });
+      const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `healthplus-events-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // Wire up UI
+    document.getElementById('btnRefresh').addEventListener('click', fetchMetrics);
+    document.getElementById('btnExport').addEventListener('click', exportCSV);
+    document.getElementById('searchEvents').addEventListener('input', renderTable);
+
+    // Auto refresh every 30s when enabled
+    let timer = null;
+    const auto = document.getElementById('autoRefresh');
+    auto.addEventListener('change', () => {
+      if (auto.checked) {
+        timer = setInterval(fetchMetrics, 30000);
+      } else if (timer) {
+        clearInterval(timer); timer = null;
+      }
+    });
+
+    // Initial load
+    fetchMetrics().catch(() => {
+      // graceful fallback: clear panels
+      renderAll();
+    });
+  </script>
+</body>
+</html>

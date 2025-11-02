@@ -1,0 +1,29 @@
+[
+{
+"id": "prod_TLmAQItR0K0FUy",
+"name": "Daily Multivitamin",
+"description": "Foundational wellness blend.",
+"image": "/img/vitamin.jpg",
+"oneTimePriceId": "price_1SP4cTLs3p0SJmCO40Uym1R0",
+"subscriptionPriceId": "price_1SP4dlLs3p0SJmCOQKmigRfR",
+"highlights": ["Essential nutrients", "GMP certified", "Gluten-free"]
+},
+{
+"id": "prod_TLmEVcVYgDFSx4",
+"name": "Probiotic Complex",
+"description": "10 strains, 20B CFU.",
+ "image": "/img/probiotic.jpg",
+"oneTimePriceId": "price_1SP4gVLs3p0SJmCOfx9bgPDI",
+"subscriptionPriceId": "price_1SP4h3Ls3p0SJmCOss5BwmKL",
+"highlights": ["Gut support", "Delayed-release", "No refrigeration"]
+},
+{
+"id": "prod_TLmGtNDIOVGHUD",
+"name": "Electrolyte Mix",
+"description": "Hydration support.",
+ "image": "/img/electrolyte.jpg",
+"oneTimePriceId": "price_1SP4htLs3p0SJmCOS2xcj3cH",
+"subscriptionPriceId": "price_1SP4iMLs3p0SJmCOIspD5Nls",
+"highlights": ["Sugar-free", "Trace minerals", "Naturally flavored"]
+}
+]

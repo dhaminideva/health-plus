@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Health+ Shop</title>
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-burst"></div>
+      <strong class="brand">Health</strong><span class="brand-plus">+</span>
+      <nav class="top-nav">
+        <a href="#shop" class="nav-link">Shop</a>
+        <a href="#subscribe" class="nav-link">Subscriptions</a>
+        <a href="#why" class="nav-link">Why Health+</a>
+        <a href="#support" class="nav-link">Support</a>
+      </nav>
+    </div>
+    <div class="header-actions">
+      <a href="./admin.html" class="btn outline" data-nav="admin" style="display:none">Admin</a>
+      <a href="./login.html" class="btn outline" data-nav="login">Login</a>
+      <a href="#" class="btn" data-nav="logout" style="display:none">Logout</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="subscribe">
+    <h1>Feel good, every day.</h1>
+    <p>Clean ingredients, transparent pricing, and science-backed formulas. Delivered your way.</p>
+    <div class="hero-actions">
+      <a href="#shop" class="btn">Browse products</a>
+      <a href="#shop" class="btn outline">See subscriptions</a>
+    </div>
+    <div class="hero-chips">
+      <span class="chip">GMP</span>
+      <span class="chip">3rd-party tested</span>
+      <span class="chip">Made in USA</span>
+      <span class="chip">Carbon neutral</span>
+    </div>
+  </section>
+
+  <!-- Value props -->
+  <section class="features" id="why">
+    <div class="feature"><span class="f-ic">🚚</span><div><h4>Fast shipping</h4><p>2–4 business days nationwide.</p></div></div>
+    <div class="feature"><span class="f-ic">📦</span><div><h4>Easy subscriptions</h4><p>Pause, skip, or cancel anytime.</p></div></div>
+    <div class="feature"><span class="f-ic">✅</span><div><h4>Quality first</h4><p>Clinical doses, clean labels.</p></div></div>
+    <div class="feature"><span class="f-ic">💬</span><div><h4>Human support</h4><p>Real people, real answers.</p></div></div>
+  </section>
+
+
+  <!-- Shop -->
+  <main class="container" id="shop" style="margin-top:32px">
+    <h2>Shop</h2>
+    <div id="productGrid" class="grid"></div>
+
+    <section class="cart">
+      <div class="cart-head">
+        <h3>Your Cart</h3>
+        <div id="cartBadge" class="cart-badge" hidden>0</div>
+      </div>
+
+      <div id="cartItems"></div>
+
+      <div class="cart-guest" id="guestBlock" hidden>
+        <label class="label">Email for receipt (guest checkout):</label>
+        <input class="input" id="guestEmail" type="email" placeholder="you@example.com"/>
+      </div>
+
+      <div class="cart-actions">
+        <button id="checkoutOneTime" class="btn">Checkout (One-time)</button>
+        <button id="checkoutSubscription" class="btn outline">Checkout (Subscription)</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="support">
+    <div class="footer-grid">
+      <div>
+        <div class="logo-burst small"></div>
+        <strong>Health+</strong>
+        <p class="muted">Wellness that fits your life.</p>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <a href="#">About</a><a href="#">Careers</a><a href="#">Press</a>
+      </div>
+      <div>
+        <h5>Help</h5>
+        <a href="#">Contact</a><a href="#">Shipping</a><a href="#">Returns</a>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <a href="#">Privacy</a><a href="#">Terms</a>
+      </div>
+    </div>
+    <p class="tiny muted">© <span id="yr"></span> Health+. All rights reserved.</p>
+  </footer>
+
+  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+  <!-- IMPORTANT: auth.js first, then client.js -->
+  <script src="./auth.js"></script>
+  <script src="./client.js"></script>
+  
+</body>
+</html>
+
+

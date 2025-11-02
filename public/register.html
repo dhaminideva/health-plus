@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Create account • Health+</title>
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-burst"></div>
+      <strong class="brand">Health+</strong>
+      <span class="tagline">shop • subscribe • feel good</span>
+    </div>
+    <nav class="header-nav">
+      <a href="./index.html" class="nav-link">Back to shop</a>
+    </nav>
+  </header>
+
+  <main class="auth-wrap">
+    <form class="auth-card" id="signupForm">
+      <h1 class="auth-title">Create account</h1>
+
+      <label class="label">Email</label>
+      <input class="input" type="email" id="email" placeholder="you@example.com" required/>
+
+      <label class="label">Password</label>
+      <input class="input" type="password" id="password" placeholder="At least 6 characters" required/>
+
+      <label class="label">Admin invite (optional)</label>
+      <input class="input" type="text" id="invite" placeholder="Enter invite to create admin account"/>
+
+      <button class="btn glow" type="submit" style="width:100%">Sign up</button>
+
+      <p style="margin-top:10px;text-align:center">
+        Already have an account? <a href="./login.html">Sign in</a>
+      </p>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const body = {
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value,
+        adminInvite: document.getElementById('invite').value.trim() || undefined
+      };
+      const res = await fetch('/auth/signup',{
+        method:'POST', headers:{'Content-Type':'application/json'}, credentials:'same-origin',
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if(res.ok){ window.location.href = data.user.role==='admin' ? './admin.html' : './index.html'; }
+      else alert(data.error || 'Could not create account');
+    });
+  </script>
+</body>
+</html>
+

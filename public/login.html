@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign in • Health+</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-mark">+</span>
+        <span class="logo-text">Health</span>
+      </div>
+      <nav class="top-nav nav">
+        <a href="./index.html" class="nav-link">Back to shop</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <a href="./register.html" class="btn outline small">Create account</a>
+    </div>
+  </header>
+
+  <!-- Auth card -->
+  <main class="auth-wrap">
+    <form class="auth-card" id="loginForm" autocomplete="on">
+      <h1 class="auth-title">Sign in</h1>
+
+      <label class="label" for="email">Email</label>
+      <input class="input" id="email" type="email" placeholder="you@example.com" required />
+
+      <label class="label" for="password">Password</label>
+      <input class="input" id="password" type="password" placeholder="Your password" minlength="6" required />
+
+      <div class="form-actions">
+        <button class="btn glow" type="submit">Sign in</button>
+      </div>
+
+      <p id="authErr" class="auth-error" role="alert" aria-live="polite" style="display:none"></p>
+
+      <p class="auth-hint">
+        New here? <a href="./register.html">Create an account</a>
+      </p>
+    </form>
+  </main>
+
+  <script src="./auth.js"></script>
+  <script>
+    // Handle login and persist role so admin.html guard works.
+    const errEl = document.getElementById('authErr');
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.style.display = 'none';
+
+      const body = {
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      };
+
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok) {
+          const role = data?.user?.role || 'user';
+          // Persist session hints
+          localStorage.setItem('hp_role', role);
+          if (data?.user?.email) localStorage.setItem('hp_email', data.user.email);
+          if (data?.token) localStorage.setItem('hp_token', data.token);
+
+          // Redirect based on role
+          window.location.href = role === 'admin' ? './admin.html' : './index.html';
+        } else {
+          errEl.textContent = data?.error || 'Invalid credentials';
+          errEl.style.display = '';
+        }
+      } catch (err) {
+        errEl.textContent = 'Unable to sign in. Please try again.';
+        errEl.style.display = '';
+      }
+    });
+  </script>
+</body>
+</html>
