@@ -21,36 +21,8 @@ Key features include:
 
 ---
 
-## 🧩 Project Structure
 
-```
 
-health-plus/
-│
-├── data/
-│   └── products.json        # Product metadata (if using backend API)
-│
-├── public/
-│   ├── img/                 # Product images
-│   │   ├── vitamins.jpg
-│   │   ├── probiotic.jpg
-│   │   └── electrolyte.jpg
-│   │
-│   ├── index.html           # Main storefront (shop + testimonials)
-│   ├── login.html           # User login
-│   ├── admin.html           # Admin dashboard (restricted)
-│   ├── register.html        # Registration page
-│   ├── styles.css           # Global stylesheet
-│   ├── auth.js              # Simulated auth/session
-│   └── client.js            # (Optional) product rendering script
-│
-├── server.js                # Express backend (routes, static serving)
-├── package.json             # Dependencies
-└── README.md
-
-````
-
----
 
 ## ⚙️ Installation & Setup
 
