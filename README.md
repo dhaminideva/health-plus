@@ -7,7 +7,7 @@ A sleek **Node.js + Express + HTML/CSS** web app built to showcase a subscriptio
 
 | Home Page | Product Section | Cart |
 |------------|----------------|-------------|
-| ![Home](screenshots/landingpage.png) | ![Products](screenshots/shop.png) | ![Cart](cart/login.png) |
+| ![Home](screenshots/landingpage.png) | ![Products](screenshots/shop.png) | ![Cart](screenshots/cart.png) |
 
 | Admin Dashboard | Signup | Signin |
 |-----------------|---------------|-----------------|
