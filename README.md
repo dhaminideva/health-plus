@@ -5,13 +5,19 @@ A sleek **Node.js + Express + HTML/CSS** web app built to showcase a subscriptio
 ---
 ## 🖼️ Screenshots
 
-| Home Page | Product Section | Cart |
-|------------|----------------|-------------|
-| ![Home](screenshots/landingpage.png) | ![Products](screenshots/shop.png) | ![Cart](screenshots/cart.png) |
+## 🖼️ Screenshots
 
-| Admin Dashboard | Signup | Signin |
-|-----------------|---------------|-----------------|
-|![Admin](screenshots/admin.png)  | ![Signup](screenshots/signup.png) | ![Signin](screenshots/signin.png) |
+| Home Page | Product Section |
+|------------|----------------|
+| ![Home](screenshots/landingpage.png) | ![Products](screenshots/shop.png) |
+
+| Cart | Admin Dashboard |
+|------|-----------------|
+| ![Cart](screenshots/cart.png) | ![Admin](screenshots/admin.png) |
+
+| Signup | Signin |
+|--------|--------|
+| ![Signup](screenshots/signup.png) | ![Signin](screenshots/signin.png) |
 
 ## 🚀 Overview
 
