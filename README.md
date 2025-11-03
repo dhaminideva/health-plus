@@ -3,6 +3,15 @@
 A sleek **Node.js + Express + HTML/CSS** web app built to showcase a subscription-based wellness storefront — focused on clean UI, modular routing, and seamless client interaction.
 
 ---
+## 🖼️ Screenshots
+
+| Home Page | Product Section | Cart |
+|------------|----------------|-------------|
+| ![Home](screenshots/landingpage.png) | ![Products](screenshots/shop.png) | ![Cart](cart/login.png) |
+
+| Admin Dashboard | Signup | Signin |
+|-----------------|---------------|-----------------|
+|![Admin](screenshots/admin.png)  | ![Signup](screenshots/signup.png) | ![Signin](screenshots/signin.png) |
 
 ## 🚀 Overview
 
